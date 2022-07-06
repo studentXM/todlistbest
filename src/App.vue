@@ -1,28 +1,68 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="content">
+      <my-header @addevent="getvalue" />
+      <my-list :listLabel="listLabel" />
+      <my-footer />
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MyHeader from "./components/MyHeader.vue";
+import MyFooter from "./components/MyFooter.vue";
+import MyList from "./components/MyList.vue";
 
 export default {
-  name: 'App',
+  name: "App",
+  data(){
+    return {
+      listLabel: JSON.parse(window.localStorage.getItem('list')) || [
+        { name: "vue", checked: true },
+        { name: "uni-app", checked: false },
+        { name: "axios", checked: false },
+        { name: "webpack", checked: false },
+      ],
+    }
+  },
   components: {
-    HelloWorld
+    MyHeader,
+    MyFooter,
+    MyList
+  },
+  watch:{
+    // watch完整写法 然后开启深度监视,数据内部的布尔值就会被监听到然后布尔值发生改变的时候也会被存贮
+    listLabel:{
+      deep:true,
+      handler(val){
+        window.localStorage.setItem('list',JSON.stringify(val))
+      },
+
+      
+    }
+  },
+  methods:{
+    getvalue(e){
+      this.listLabel.push({
+        name: e, checked: false
+      })
+    }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  .content{
+    width: 800px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+  }
+  ul,li{
+    list-style: none;
+    /* outline: none; */
+    margin: 0;
+    padding: 0;
+  }
+
 </style>
